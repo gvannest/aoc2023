@@ -62,4 +62,43 @@ func One() int {
 
 }
 
+func Two() int {
+
+	// s := helpers.ParseLines("day2/input2.txt")
+
+	s := helpers.ParseLines("day2/input2.txt")
+
+	res := 0
+
+	re := regexp.MustCompile(`(\d+) (red|blue|green)`)
+
+	for _, v := range s {
+		_, detail := splitGame(v, ":")
+		matches := re.FindAllStringSubmatch(detail, -1)
+
+		var maxCubesByColorForRound = map[string]int{
+			"red":   0,
+			"blue":  0,
+			"green": 0,
+		}
+		for _, match := range matches {
+			cubeNumber, _ := strconv.Atoi(match[1])
+			prevMaxCubes := maxCubesByColorForRound[match[2]]
+			if cubeNumber > prevMaxCubes {
+				maxCubesByColorForRound[match[2]] = cubeNumber
+			}
+		}
+
+		gamePower := 1
+		for _, maxCubesForRound := range maxCubesByColorForRound {
+			gamePower *= maxCubesForRound
+		}
+		res += gamePower
+
+	}
+
+	return res
+
+}
+
 // Game (?P<gameNumber>\d+)
